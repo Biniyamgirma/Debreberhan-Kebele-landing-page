@@ -10,6 +10,8 @@ import Services from "./pages/Services";
 import News from "./pages/News";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import Admin from "./pages/Admin";
+import Edit from "./pages/Edit";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,8 @@ const App = () => (
               <Route path="/services" element={<Services />} />
               <Route path="/news" element={<News />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/edit/:id" element={<Edit />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Footer />

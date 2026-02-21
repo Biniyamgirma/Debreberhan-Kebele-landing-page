@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-
 @theme {
   --color-background: #ffffff;
   --color-foreground: #1f2937;
@@ -40,12 +39,11 @@
   --color-sidebar-accent-foreground: #18181b;
   --color-sidebar-border: #e5e7eb;
   --colorsidebar-ring: #3b82f6;
-
 }
 
 @layer utilities {
   .border-color {
-    border-color: ;
+    border-color:;
   }
   .bg-background {
     background-color: var(--color-background);
@@ -83,7 +81,6 @@
   .text-accent-foreground {
     color: var(--color-accent-foreground);
     background-color: #1a4331;
-
   }
   .bg-destructive {
     background-color: var(--color-destructive);
@@ -144,97 +141,6 @@
   }
   .muted {
     opacity: 0.6;
-    color:var(--color-text-muted-foreground);
+    color: var(--color-text-muted-foreground);
   }
 }
-
-/* @theme {
-  --color-background: #ffffff;
-  --color-foreground: #1f2937;
-
-    --color-card: #ffffff;
-    --color-card-foreground: #1f2937;
-
-    --popover: #ffffff;
-    --popover-foreground: #1f2937; */
-
-    /* Ethiopian Green - Primary */
-    /* --primary: #1a4331;
-    --primary-foreground: #ffffff; */
-
-    /* Ethiopian Yellow - Secondary */
-    /* --secondary: #f59e0b;
-    --secondary-foreground: #1f2937; */
-
-    /* Professional Blue - Accent */
-    /* --accent: #1d4ed8;
-    --accent-foreground: #ffffff; */
-
-    /* --muted: #f3f4f6;
-    --muted-foreground: #6b7280;
-
-    --destructive: #dc2626;
-    --destructive-foreground: #ffffff;
-
-    --border: #e5e7eb;
-    --input: #e5e7eb;
-    --ring: #1a4331;
-
-    --radius: 0.75rem; */
-    
-    /* Custom tokens */
-    /* --hero-gradient: linear-gradient(135deg, rgba(26, 67, 49, 0.95), rgba(31, 81, 59, 0.85));
-    --card-shadow: 0 1px 3px 0 rgba(31, 41, 55, 0.1);
-    --card-shadow-hover: 0 10px 30px -5px rgba(26, 67, 49, 0.2);
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    --sidebar-background: #fafafa;
-    --sidebar-foreground: #374151;
-    --sidebar-primary: #18181b;
-    --sidebar-primary-foreground: #fafafa;
-    --sidebar-accent: #f4f4f5;
-    --sidebar-accent-foreground: #18181b;
-    --sidebar-border: #e5e7eb;
-    --sidebar-ring: #3b82f6; */
-/* } */
-
-/* .dark {
-    --background: #151a21;
-    --foreground: #fafafa;
-
-    --card: #171c24;
-    --card-foreground: #fafafa;
-
-    --popover: #171c24;
-    --popover-foreground: #fafafa;
-
-    --primary: #2d7a5a;
-    --primary-foreground: #ffffff;
-
-    --secondary: #f59e0b;
-    --secondary-foreground: #1f2937;
-
-    --accent: #3b82f6;
-    --accent-foreground: #ffffff;
-
-    --muted: #1e2530;
-    --muted-foreground: #9ca3af;
-
-    --destructive: #b91c1c;
-    --destructive-foreground: #ffffff;
-
-    --border: #252e3a;
-    --input: #252e3a;
-    --ring: #2d7a5a;
-
-    --sidebar-background: #18181b;
-    --sidebar-foreground: #f4f4f5;
-    --sidebar-primary: #2563eb;
-    --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: #27272a;
-    --sidebar-accent-foreground: #f4f4f5;
-    --sidebar-border: #27272a;
-    --sidebar-ring: #3b82f6;
-  }
-
-   */
