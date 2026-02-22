@@ -36,6 +36,9 @@ app.use(
   "/specificNews",
   require("./routes/selectSpecificNewsRoute/selectSpecificNewsRoute"),
 );
+app.use("/editNews", require("./routes/editNewsRoute/editNewsRoute"));
+app.use("/deleteNews", require("./routes/deleteNewsRoute/deleteNewsRoute"));
+
 // app.use("/addNews", require("./routes/addNewsRoute/addNewsRoute"));
 
 app.listen(PORT, () => {
