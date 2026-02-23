@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardDescription,
@@ -6,68 +6,75 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+let base_url = import.meta.env.VITE_BASE_URL;
+base_url = base_url + "/getAllAdminUser";
+import axios from "axios";
+import Image from "/images/image-6.jpg";
 
 function Administrater() {
-  const newsItems = [
-    {
-      title: "ዋና አስተዳዳሪ: አቶ ጥላዬ ላቀው",
-      description: " ",
-      date: "2024-03-15",
-      category: "አመራር",
-      phone_number: "+251 911 123 456",
-      Image: "/images/image-6.jpg",
-    },
-    {
-      title: "ዋና ስራ አስኪያጅ: አቶ ዳዊት ወልዴ",
-      description: " ",
-      date: "2024-03-10",
-      category: "አመራር",
-      phone_number: "+251 911 654 321",
-      Image: "/images/image-6.jpg",
-    },
-    {
-      title: "የቀበሌው ማህበራዊና ኢኮኖሚያዊ ዘርፍ ሀላፊ: ወ/ሪት ብዙአየሁ ግርማ",
-      description: " ",
-      date: "2024-03-10",
-      category: "አመራር",
-      phone_number: "+251 911 987 654",
-      Image: "/images/image-6.jpg",
-    },
-  ];
+  const [admins, setAdmins] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    axios
+      .get(base_url)
+      .then((response) => {
+        setAdmins(response.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError("error When fetching Admin Info");
+        setLoading(false);
+      });
+  }, []);
+
   return (
     <section className="py-16 bg-accent-foreground flex-col justify-center items-center w-full ">
       <div className="container mx-auto px-4">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {newsItems.map((item, index) => (
-            <Card
-              key={index}
-              className="animate-fade-up flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <CardHeader>
-                <div className="mb-2 h-48 p-4 flex items-end justify-between relative">
-                  <div
-                    className="h-48 w-full  absolute inset-0 z-10 rounded-2xl bg-cover bg-center"
-                    style={{
-                      backgroundImage: `
+        {loading ? (
+          <h1 className="text-green-500">Loading.....</h1>
+        ) : error ? (
+          <h1 className="text-red-500">error</h1>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {admins.map((item, index) => (
+              <Card
+                key={index}
+                className="animate-fade-up flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <CardHeader>
+                  <div className="mb-2 h-60 p-4 flex items-end justify-between relative">
+                    <div
+                      className="h-60 w-full  absolute inset-0 z-10 rounded-2xl bg-cover bg-center"
+                      style={{
+                        backgroundImage: `
                         linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
-                        url(${item.Image})
+                        url(${item.image ? item.image : Image})
                       `,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      backgroundBlendMode: "darken",
-                    }}
-                  ></div>
-                  <Badge variant="default" className="z-20 ">
-                    {item.category}
-                  </Badge>
-                </div>
-                <CardTitle className="text-xl">{item.title}</CardTitle>
-                <CardDescription>{item.description}</CardDescription>
-              </CardHeader>
-            </Card>
-          ))}
-        </div>
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        backgroundBlendMode: "darken",
+                      }}
+                    ></div>
+                    {item.isOnline == 1 ? (
+                      <Badge variant="default" className="z-20">
+                        {item.isOnline == 1
+                          ? "hezb be magelgela lay yegenalu"
+                          : ""}
+                      </Badge>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  <CardTitle className="text-xl">{item.firstName}</CardTitle>
+                  <CardDescription>{item.middleName}</CardDescription>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

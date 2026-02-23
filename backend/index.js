@@ -6,13 +6,7 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  }),
-);
+app.use(cors());
 
 app.use(express.urlencoded({ extended: false }));
 app.use(function (req, res, next) {
@@ -20,6 +14,7 @@ app.use(function (req, res, next) {
   next();
 });
 app.use(express.json());
+app.use("/getAllAdminUser", require("./routes/getAllAdmin/getAllAdminRoute"));
 app.use("/", require("./routes/test/testRoute")); ///working
 app.use("/addUser", require("./routes/addUserRoute/addUserAdminRoute")); ///
 app.use("/api", require("./routes/loginRoute/loginRoute")); //working loging

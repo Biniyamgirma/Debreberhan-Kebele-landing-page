@@ -220,7 +220,6 @@ function Admin() {
                     className="h-48 w-ful absolute inset-0 z-10 rounded-2xl bg-cover bg-center"
                     style={{
                       backgroundImage: `
-                        
                         url(${item.Image})
                       `,
                       backgroundSize: "cover",
