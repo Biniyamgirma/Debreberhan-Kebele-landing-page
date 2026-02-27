@@ -33,6 +33,7 @@ app.use(
 );
 app.use("/editNews", require("./routes/editNewsRoute/editNewsRoute"));
 app.use("/deleteNews", require("./routes/deleteNewsRoute/deleteNewsRoute"));
+app.use("/getAllNews", require("./routes/newsRoute/newsRoute"));
 
 // app.use("/addNews", require("./routes/addNewsRoute/addNewsRoute"));
 

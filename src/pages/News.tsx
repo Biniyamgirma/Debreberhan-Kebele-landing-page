@@ -13,12 +13,24 @@ import { Newsletter } from "@/components/Newsletter";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 let base_url = import.meta.env.VITE_BASE_URL;
-base_url = base_url + "//news";
+base_url = base_url + "/getAllNewss";
 export default function News() {
   const { t, language } = useLanguage();
   const [news, setNews] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    axios.get();
+    const fetchNews = async () => {
+      try {
+        const response = await axios.get(base_url);
+        setNews(response.data);
+      } catch (err) {
+        setError("faild to fetch");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNews();
   }, []);
   const newsItems = [
     {
@@ -70,7 +82,7 @@ export default function News() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {newsItems.map((item, index) => (
+            {news.map((item, index) => (
               <Card
                 key={index}
                 className="animate-fade-up flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
@@ -79,11 +91,10 @@ export default function News() {
                 <CardHeader>
                   <div className="mb-2 h-48 p-4 flex items-end justify-between relative">
                     <div
-                      className="h-48 w-ful absolute inset-0 z-10 rounded-2xl bg-cover bg-center"
+                      className="h-48 w-full absolute inset-0 z-10 rounded-2xl bg-cover bg-center"
                       style={{
                         backgroundImage: `
-                        
-                        url(${item.Image})
+                        url(${item.image})
                       `,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
@@ -91,11 +102,11 @@ export default function News() {
                       }}
                     ></div>
                     <Badge variant="secondary" className="z-20 ">
-                      {item.category}
+                      {item.subHeading}
                     </Badge>
                   </div>
                   <CardTitle className="text-xl">{item.title}</CardTitle>
-                  <CardDescription>{item.description}</CardDescription>
+                  <CardDescription>{item.body}</CardDescription>
                 </CardHeader>
                 <CardContent className="mt-auto">
                   <Button

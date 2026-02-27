@@ -83,8 +83,9 @@ function Admin() {
         <div className="">
           <h1 className="text-sm md:text-xl">እንኳን ወደ ድህረገጽ ማስተዳደሪያ በሰላም መጡ</h1>
         </div>
-        <div>
+        <div className="flex justify-center items-center space-x-4">
           <p className="text-sm md:text-lg">ዋና አስተዳዳሪ: አቶ ጥላዬ ላቀው</p>
+          <button className="rounded-sm py-2 px-3 bg-white text-black cursor-pointer hover:bg-white/90">log out</button>
         </div>
       </div>
       <div>

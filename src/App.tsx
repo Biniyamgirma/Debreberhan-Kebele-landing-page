@@ -1,6 +1,6 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter , Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -12,6 +12,9 @@ import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import Edit from "./pages/Edit";
+import Login from "./pages/Login";
+import PrivateRoute from "./components/PrivateRoute";
+
 
 const queryClient = new QueryClient();
 
@@ -21,18 +24,21 @@ const App = () => (
       <LanguageProvider>
         <BrowserRouter>
           <div className="flex min-h-screen flex-col">
-            <Header />
+            {/* <Header /> */}
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<Services />} />
               <Route path="/news" element={<News />} />
               <Route path="/contact" element={<Contact />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/edit/:id" element={<Edit />} />
+              <Route element={<PrivateRoute/>}>
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/edit/:id" element={<Edit />} />
+              </Route>
+              <Route path="/login" element={<Login />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-            <Footer />
+            {/* <Footer /> */}
           </div>
         </BrowserRouter>
       </LanguageProvider>
