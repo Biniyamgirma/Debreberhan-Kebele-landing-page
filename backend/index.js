@@ -1,12 +1,16 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const cookieParser = require('cookie-parser');
 require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true // Allow cookies to be sent
+}));
 
 app.use(express.urlencoded({ extended: false }));
 app.use(function (req, res, next) {

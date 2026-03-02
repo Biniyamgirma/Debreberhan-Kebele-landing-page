@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useState } from 'react';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 
 export default function Services() {
   const { t } = useLanguage();
@@ -56,6 +58,7 @@ export default function Services() {
 
   return (
     <div className="flex-1">
+      <Header />
       {/* Header */}
       <section className="bg-muted/30 py-16">
         <div className="container mx-auto px-4">
@@ -117,6 +120,7 @@ export default function Services() {
           )}
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

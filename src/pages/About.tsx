@@ -1,6 +1,8 @@
 import { Target, Eye, Shield, Zap, Users, Award } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 
 export default function About() {
   const { t } = useLanguage();
@@ -30,6 +32,7 @@ export default function About() {
 
   return (
     <div className="flex-1">
+      <Header />
       {/* Header */}
       <section className="bg-muted/30 py-16">
         <div className="container mx-auto px-4">
@@ -101,6 +104,7 @@ export default function About() {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

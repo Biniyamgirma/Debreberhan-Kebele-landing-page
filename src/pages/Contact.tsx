@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 
 export default function Contact() {
   const { t } = useLanguage();
@@ -48,6 +50,7 @@ export default function Contact() {
 
   return (
     <div className="flex-1">
+      <Header />
       {/* Header */}
       <section className="bg-muted/30 py-16">
         <div className="container mx-auto px-4">
@@ -94,7 +97,7 @@ export default function Contact() {
                 <CardHeader>
                   <CardTitle>{t('contact.form.send')}</CardTitle>
                   <CardDescription>
-                    Fill out the form below and we will get back to you as soon as possible
+                    {t('contact.info.subtitle')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -157,6 +160,7 @@ export default function Contact() {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

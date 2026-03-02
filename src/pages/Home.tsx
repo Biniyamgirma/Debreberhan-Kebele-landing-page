@@ -7,6 +7,8 @@ import { Newsletter } from '@/components/Newsletter';
 import { Link } from 'react-router-dom';
 import heroBanner from '/images/ethiopia.webp';
 import Administrater from '@/components/Administrater';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 
 export default function Home() {
   const { t } = useLanguage();
@@ -58,6 +60,7 @@ export default function Home() {
 
   return (
     <div className="flex-1">
+      <Header />
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -141,6 +144,7 @@ export default function Home() {
       {/* Newsletter */}
       <Newsletter />
       <Administrater />
+      <Footer />
     </div>
   );
 }

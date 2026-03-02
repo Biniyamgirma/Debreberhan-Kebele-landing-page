@@ -26,16 +26,18 @@ const App = () => (
           <div className="flex min-h-screen flex-col">
             {/* <Header /> */}
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/news" element={<News />} />
-              <Route path="/contact" element={<Contact />} />
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/news" element={<News />} />
+                <Route path="/contact" element={<Contact />} />
               <Route element={<PrivateRoute/>}>
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/edit/:id" element={<Edit />} />
               </Route>
-              <Route path="/login" element={<Login />} />
+              <Route path="/login" element={<Login />} >
+
+              </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
             {/* <Footer /> */}

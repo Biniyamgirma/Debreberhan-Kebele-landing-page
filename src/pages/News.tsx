@@ -12,6 +12,8 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Newsletter } from "@/components/Newsletter";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 let base_url = import.meta.env.VITE_BASE_URL;
 base_url = base_url + "/getAllNewss";
 export default function News() {
@@ -59,6 +61,7 @@ export default function News() {
 
   return (
     <div className="flex-1">
+      <Header />
       {/* Header */}
       <section className="bg-muted/30 py-16">
         <div className="container mx-auto px-4">
@@ -125,6 +128,7 @@ export default function News() {
 
       {/* Newsletter */}
       <Newsletter />
+      <Footer />
     </div>
   );
 }
