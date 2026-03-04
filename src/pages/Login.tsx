@@ -24,11 +24,12 @@ function Login() {
       "password":password
     });
 
-    if (response.data.status) {
+    if (response.data.message) {
       const { token } = response.data;
 
       localStorage.setItem("jwtToken", token);
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
       <Navigate to="/admin" />
       setMessage('Login successful!');
     } else {
