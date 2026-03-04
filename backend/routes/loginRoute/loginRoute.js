@@ -26,13 +26,14 @@ router.post("/login", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     const user = rows[0];
+    const {first_name, middle_name,last_name,role} = user
     console.log(user);
     const isPasswordValid = await comparePassword(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid password" });
     }
     const token = generateToken(user);
-    res.json({ message: "Login successful", firstName: user.firstName, token });
+    res.json({ message: "Login successful", userFirstName: first_name,userMiddleName:middle_name, token });
   } catch (err) {
     console.error("Error during login:", err);
     res.status(500).json({ error: "Internal server error" });

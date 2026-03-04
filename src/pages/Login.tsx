@@ -1,49 +1,55 @@
 import React,{useState,useEffect}from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import {WifiLoaderComponent} from "@/components/ui/WifiLoaderComponent"
 
-import {Navigate} from "react-router-dom"
 
 const api = axios.create({
   baseURL: 'http://localhost:8080',
 });
 
 function Login() {
-  const[firstName,setFirstName] = useState("")
-  const[password,setPassword] = useState("")
+  const [firstName, setFirstName] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
-  const handlLogIn = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setMessage('');
+  const navigate = useNavigate()
 
-  try {
-    const response = await api.post('/api/login', {
-      "firstName":firstName,
-      "password":password
-    });
+   const handlLogIn = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage("");
 
-    if (response.data.message) {
-      const { token } = response.data;
+    try {
+      const response = await api.post("/api/login", {
+        firstName,
+        password,
+      });
 
-      localStorage.setItem("jwtToken", token);
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
-      <Navigate to="/admin" />
-      setMessage('Login successful!');
-    } else {
-      setMessage(`Error: ${response.data.message}`);
+      console.log(response.data);
+      if (response.data.token) {
+        localStorage.setItem("jwtToken", response.data.token);
+        localStorage.setItem("first_name", response.data.userFirstName);
+        localStorage.setItem("last_name", response.data.userFirstName);
+
+        api.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${response.data.token}`;
+
+        setMessage("Login successful!");
+        navigate("/admin"); 
+      } else {
+        setMessage(response.data.message);
+      }
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+      setMessage(
+        error.response?.data?.message || "Server error. Please try again."
+      );
     }
-
-  } catch (error) {
-    setMessage("Server error. Please try again.");
-    console.error(error);
-    console.log('somthing causing the error')
-  }
-
-  setLoading(false);
-};
+    setLoading(false);
+  };
 
   return (
     <section className="flex justify-center items-center min-h-screen max-w-screen overflow-clip bg-primary">
@@ -59,9 +65,11 @@ function Login() {
             ማስተዳደሪያ በደህና መጡ
           </h2>
         </div>
-
+        <div className="w-full flex justify-center items-center">
+          {loading ? <WifiLoaderComponent /> : ""}
+        </div>
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#"  className="space-y-6">
+          <form action="#"  className="space-y-6" onSubmit={handlLogIn}>
             <div>
               <label
                 htmlFor="email"
@@ -111,7 +119,6 @@ function Login() {
               >
                 ወደ ድህረገጽ ለመግባት
               </button>
-              {loading ? 'itsloading':'not loading'}
             </div>
           </form>
         </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import { Calendar, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Header from "@/components/admin/Header"
 // import imageUrl from "/images/image-6.jpg";
 
 function Admin() {
@@ -77,17 +78,27 @@ function Admin() {
       Image: "/images/image-6.jpg",
     },
   ];
+  const [name, setName] = useState(() => {
+    const saved = localStorage.getItem("first_name");
+  // Check if the value exists and handle it appropriately
+  if (saved) {
+    try {
+      // Try to parse as JSON first (in case it was stored with JSON.stringify)
+      return JSON.parse(saved);
+    } catch {
+      // If parsing fails, it's a plain string, so return it directly
+      return saved;
+    }
+  }
+  return "";
+  })
+  const handleLogout = () => {
+    localStorage.removeItem("jwtToken");
+    window.location.href = "/login";
+  };
   return (
     <section>
-      <div className="flex w-screen justify-between items-center h-12 bg-[#1a4331]/95 text-white px-12 my-8">
-        <div className="">
-          <h1 className="text-sm md:text-xl">እንኳን ወደ ድህረገጽ ማስተዳደሪያ በሰላም መጡ</h1>
-        </div>
-        <div className="flex justify-center items-center space-x-4">
-          <p className="text-sm md:text-lg">ዋና አስተዳዳሪ: አቶ ጥላዬ ላቀው</p>
-          <button className="rounded-sm py-2 px-3 bg-white text-black cursor-pointer hover:bg-white/90">log out</button>
-        </div>
-      </div>
+      <Header adminName={name} onLogout={handleLogout}/>
       <div>
         <div className="container mx-auto px-4 my-8">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
