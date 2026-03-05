@@ -1,7 +1,8 @@
-import React,{useState} from "react";
+import React,{useState,useEffect} from "react";
 import { Calendar, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
+import Switch from "@/components/ui/Switch";
 import {
   Card,
   CardContent,
@@ -11,12 +12,18 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import Header from "@/components/admin/Header"
+import Header from "@/components/admin/Header";
+import axios from "axios";
+import api from "@/lib/api";
+import AdministratorCard from "@/components/admin/AdministratorCard";
 // import imageUrl from "/images/image-6.jpg";
-
+import { WifiLoaderComponent } from "@/components/ui/LargeLoading";
 function Admin() {
   const { t, language } = useLanguage();
-
+  const [admins,setAdmins] = useState([]);
+  const [trigger, setTrigger] = useState(false);
+  const [loading,setLoading] = useState(false);
+  const [activeToggle, setActiveToggle] = useState(null);
   let no_image: Boolean = false;
   let imageUrl: string | null = null;
   if (!imageUrl) {
@@ -49,35 +56,7 @@ function Admin() {
       Image: "/images/image-3.webp",
     },
   ];
-  const adminstrators = [
-    {
-      id: 1,
-      title: "ዋና አስተዳዳሪ: አቶ ጥላዬ ላቀው",
-      description: " ",
-      date: "2024-03-15",
-      category: "አመራር",
-      phone_number: "+251 911 123 456",
-      Image: "/images/image-6.jpg",
-    },
-    {
-      id: 2,
-      title: "ዋና ስራ አስኪያጅ: አቶ ዳዊት ወልዴ",
-      description: " ",
-      date: "2024-03-10",
-      category: "አመራር",
-      phone_number: "+251 911 654 321",
-      Image: "/images/image-6.jpg",
-    },
-    {
-      id: 3,
-      title: "የቀበሌው ማህበራዊና ኢኮኖሚያዊ ዘርፍ ሀላፊ: ወ/ሪት ብዙአየሁ ግርማ",
-      description: " ",
-      date: "2024-03-10",
-      category: "አመራር",
-      phone_number: "+251 911 987 654",
-      Image: "/images/image-6.jpg",
-    },
-  ];
+
   const [name, setName] = useState(() => {
     const saved = localStorage.getItem("first_name");
   // Check if the value exists and handle it appropriately
@@ -96,48 +75,110 @@ function Admin() {
     localStorage.removeItem("jwtToken");
     window.location.href = "/login";
   };
+
+  const handleCardClick = ()=>{
+
+
+    setTrigger(true)
+  }
+useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        setLoading(true)
+        const res = await api.get("/getAllAdminUser");
+        setAdmins(res.data);
+        setLoading(false)
+      } catch (err) {
+        setLoading(false)
+        console.error(err);
+      }
+    };
+
+    fetchNews();
+  }, [name,trigger]);
+  
+const handleToggle = async (itemId:number) => {
+    // Find the clicked item
+    const clickedItem = admins.find(item => item.id === itemId);
+    if (!clickedItem) return;
+
+    // Set this item as active (for loading state)
+    setActiveToggle(itemId);
+    console.log("loading.......")
+    // Optimistic update
+    const newStatus = clickedItem.isOnline === 1 ? 0 : 1;
+    setAdmins(prevItems =>
+      prevItems.map(item =>
+        item.id === itemId
+          ? { ...item, isOnline: newStatus }
+          : item
+      )
+    );
+
+    try {
+      // API call with the item ID
+      await api.put(`/changeIsOnline`, {
+        isOnline: newStatus,
+        id:activeToggle
+      });
+      console.log("status changed..",activeToggle,'new state',newStatus)
+    } catch (error) {
+      setAdmins(prevItems =>
+        prevItems.map(item =>
+          item.id === itemId
+            ? { ...item, isOnline: clickedItem.status }
+            : item
+        )
+      );
+    } finally {
+      setActiveToggle(null);
+    }
+  };
   return (
     <section>
       <Header adminName={name} onLogout={handleLogout}/>
       <div>
         <div className="container mx-auto px-4 my-8">
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {adminstrators.map((item, index) => (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 ">
+            {loading? (
+              <div className="w-full mx-auto">
+                <WifiLoaderComponent />
+              </div>
+            )  :admins.map((item, index) => (
               <Card
-                key={index}
-                className="animate-fade-up flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <CardHeader>
-                  <div className="mb-2 h-48 p-4 flex items-end justify-between relative">
-                    <div
-                      className="h-48 w-full  absolute inset-0 z-10 rounded-2xl bg-cover bg-center"
-                      style={{
-                        backgroundImage: `
-                        linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
-                        url(${item.Image})
-                      `,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        backgroundBlendMode: "darken",
-                      }}
-                    ></div>
-                    <Badge variant="default" className="z-20 ">
-                      {item.category}
-                    </Badge>
-                  </div>
-                  <CardTitle className="text-xl">{item.title}</CardTitle>
-                  <CardDescription>{item.description}</CardDescription>
-
-                  <label className="inline-flex items-center cursor-pointer">
-                    <input type="checkbox" value="" className="sr-only peer" />
-                    <div className="relative w-9 h-5 bg-gray-400 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-soft dark:peer-focus:ring-brand-soft rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-gray-600 after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand"></div>
-                    <span className="select-none ms-3 text-sm font-medium text-heading">
-                      አሁን በስራ ላይ እንደሚገኙ ለማብራት እና ለማጥፋት።
-                    </span>
-                  </label>
-                </CardHeader>
-              </Card>
+        key={index}
+        className="animate-fade-up flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+        style={{ animationDelay: `${item.id * 0.1}s` }}
+                  >
+                    <CardHeader>
+                      <div className="mb-2 h-48 p-4 flex items-end justify-between relative">
+                        <div
+                          className="h-48 w-full  absolute inset-0 z-10 rounded-2xl bg-cover bg-center"
+                          style={{
+                            backgroundImage: `
+                            linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+                            url(${item.image})
+                          `,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundBlendMode: "darken",
+                          }}
+                        ></div>
+                        <Badge variant="default" className="z-20 ">
+                          {item.category}
+                        </Badge>
+                      </div>
+                      <CardTitle className="text-xl">{item.firstName + ' ' + item.middleName}</CardTitle>
+                      <CardDescription>{item.admin}</CardDescription>
+    
+                      <div className="toggle-wrapper">
+                          <Switch isOnline={item.isOnline} onClickedProp={()=>handleToggle(item.id)} itemId={item.id}/>
+            {activeToggle === item.id && (
+              <span className="loading-dots">...</span>
+            )}
+          </div>
+                    </CardHeader>
+                  </Card>
             ))}
           </div>
         </div>

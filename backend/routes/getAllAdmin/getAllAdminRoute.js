@@ -16,6 +16,8 @@ router.get("/", async (req, res) => {
         id: user.id,
         firstName: user.first_name,
         middleName: user.middle_name,
+        admin:user.role,
+        category:user.category,
         isOnline: user.is_online,
         image: user.image,
       })),
@@ -24,9 +26,10 @@ router.get("/", async (req, res) => {
     console.error("Error fetching isOnline status:", error);
     res.status(500).json({ error: "Internal server error" });
   } finally {
-    if (pool) {
-      await pool.end();
-    }
+    return
+    // if (pool) {
+    //   await pool.end();
+    // }
   }
 });
 

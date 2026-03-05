@@ -2,11 +2,9 @@ import React,{useState,useEffect}from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {WifiLoaderComponent} from "@/components/ui/WifiLoaderComponent"
+import api from "@/lib/api";
 
 
-const api = axios.create({
-  baseURL: 'http://localhost:8080',
-});
 
 function Login() {
   const [firstName, setFirstName] = useState("");
