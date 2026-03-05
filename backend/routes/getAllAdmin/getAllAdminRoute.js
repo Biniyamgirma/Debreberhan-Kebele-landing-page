@@ -2,7 +2,7 @@ const express = require("express");
 const { connectWithConnector } = require("../../config/config");
 require("dotenv").config();
 const router = express.Router();
-let pool;
+const pool = require('../../config/conn')
 
 router.get("/", async (req, res) => {
   try {
