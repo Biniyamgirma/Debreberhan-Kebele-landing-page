@@ -44,3 +44,4 @@ app.use("/getAllNews", require("./routes/newsRoute/newsRoute"));
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+

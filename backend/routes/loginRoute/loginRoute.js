@@ -33,7 +33,7 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid password" });
     }
     const token = generateToken(user);
-    res.json({ message: "Login successful", userFirstName: first_name,userMiddleName:middle_name, token });
+    res.json({ message: "Login successful",id:user.id, userFirstName: first_name,userMiddleName:middle_name, token });
   } catch (err) {
     console.error("Error during login:", err);
     res.status(500).json({ error: "Internal server error" });

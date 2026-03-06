@@ -19,11 +19,11 @@ router.post(
         },
         async (error, result) => {
           if (error) return res.status(500).json({ message: error.message });
-          const { id, title, body } = req.body;
+          const { id, title, body,subHeading } = req.body;
           pool = await connectWithConnector();
           const [rows] = await pool.query(
-            "INSERT INTO news (user_id, title, body, image) VALUES (?, ?, ?, ?)",
-            [id, title, body, result.secure_url],
+            "INSERT INTO news (user_id, title, body, image,sub_heading) VALUES (?, ?, ?, ?,?)",
+            [id, title, body, result.secure_url,subHeading],
           );
           res.json({
             message: "news addes successfully",

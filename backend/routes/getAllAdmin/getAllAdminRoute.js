@@ -1,12 +1,13 @@
 const express = require("express");
 const { connectWithConnector } = require("../../config/config");
+
 require("dotenv").config();
 const router = express.Router();
-const pool = require('../../config/conn')
+
 
 router.get("/", async (req, res) => {
   try {
-    pool = await connectWithConnector();
+    const pool = await connectWithConnector();
     const [rows] = await pool.query("SELECT * FROM user ");
     if (rows.length === 0) {
       return res.status(404).json({ error: "System status not found" });
@@ -26,10 +27,9 @@ router.get("/", async (req, res) => {
     console.error("Error fetching isOnline status:", error);
     res.status(500).json({ error: "Internal server error" });
   } finally {
-    return
-    // if (pool) {
-    //   await pool.end();
-    // }
+    if (pool) {
+      await pool.end();
+    }
   }
 });
 

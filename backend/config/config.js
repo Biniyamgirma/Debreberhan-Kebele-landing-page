@@ -27,7 +27,6 @@ exports.connectWithConnector = async (config) => {
     password: process.env.DB_PASS, // e.g. 'my-db-password'
     database: process.env.DB_NAME, // e.g. 'my-database'
     // ... Specify additional properties here.
-    max: 20,
     ...config,
   };
   // Establish a connection to the database.
