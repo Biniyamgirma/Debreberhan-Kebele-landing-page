@@ -15,6 +15,7 @@ router.get("/", async (req, res) => {
         body: news.body,
         image: news.image,
         subHeading: news.sub_heading,
+        date: news.created_at
       })),
     );
   } catch (error) {

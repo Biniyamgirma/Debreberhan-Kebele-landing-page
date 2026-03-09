@@ -7,6 +7,18 @@ const authMiddleware = require("../../middleware/authMiddleware");
 const cloudinary = require("../../config/cloudinary");
 let pool;
 
+router.get("/", async (req, res) => {
+  try {
+    query = "SELECT * FROM news";
+    pool = await connectWithConnector();
+    const [rows] = await pool.query(query);
+    res.json(rows);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 router.post(
   "/",
   authMiddleware(["subAdmin", "admin"]),

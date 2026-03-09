@@ -130,7 +130,6 @@ function UploadImage() {
                   className="hidden"
                 />
               </label>
-
             </div>
           </div>
         </form>

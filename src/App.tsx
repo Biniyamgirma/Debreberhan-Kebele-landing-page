@@ -14,6 +14,7 @@ import Admin from "./pages/Admin";
 import Edit from "./pages/Edit";
 import Login from "./pages/Login";
 import PrivateRoute from "./components/PrivateRoute";
+import ManageUsersPage from "./pages/ManageUsersPage";
 
 
 const queryClient = new QueryClient();
@@ -24,7 +25,7 @@ const App = () => (
       <LanguageProvider>
         <BrowserRouter>
           <div className="flex min-h-screen flex-col">
-            {/* <Header /> */}
+            
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
@@ -34,13 +35,14 @@ const App = () => (
               <Route element={<PrivateRoute/>}>
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/edit/:id" element={<Edit />} />
+                <Route path="/manageUsers" element={<ManageUsersPage />} />
               </Route>
               <Route path="/login" element={<Login />} >
 
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
-            {/* <Footer /> */}
+            
           </div>
         </BrowserRouter>
       </LanguageProvider>

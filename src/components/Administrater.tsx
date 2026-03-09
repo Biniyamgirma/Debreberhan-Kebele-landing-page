@@ -41,8 +41,8 @@ function Administrater() {
             {admins.map((item, index) => (
               <Card
                 key={index}
-                className="animate-fade-up flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="animate-fade-up flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1 "
+                style={{ animationDelay: `${index * 0.1}s`, backgroundColor: `${item.isOnline == 1 ? "#a8df8e1a" : "#ffbfbf1a"}` }}
               >
                 <CardHeader>
                   <div className="mb-2 h-60 p-4 flex items-end justify-between relative">

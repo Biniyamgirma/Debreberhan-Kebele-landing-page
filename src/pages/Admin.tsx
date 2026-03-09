@@ -3,6 +3,9 @@ import { Calendar, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 import Switch from "@/components/ui/Switch";
+import dateTimeConverter from "@/lib/ethiopian_date_time_converter";
+import { EthDateTime } from 'ethiopian-calendar-date-converter';
+import { format } from 'date-fns';
 import {
   Card,
   CardContent,
@@ -17,43 +20,20 @@ import axios from "axios";
 import api from "@/lib/api";
 import AdministratorCard from "@/components/admin/AdministratorCard";
 // import imageUrl from "/images/image-6.jpg";
-import { WifiLoaderComponent } from "@/components/ui/LargeLoading";
 import UploadImage from "@/components/admin/UploadImage";
+import defaultImage from "/images/image-6.jpg"
 function Admin() {
+  const [date, setDate] = useState(null);
   const { t, language } = useLanguage();
   const [admins,setAdmins] = useState([]);
-  const [trigger, setTrigger] = useState(false);
   const [loading,setLoading] = useState(false);
   const [activeToggle, setActiveToggle] = useState(null);
+  const [imageUrl,setImageUrl] = useState(defaultImage);
+  const [news,setNews] = useState([]);
+  const [error,setError] = useState("");
+  const [newsLoader,setNewsLoader] = useState(false);
   
-  const newsItems = [
-    {
-      id: 1,
-      title: "በቀበሌው የፅዳት ስራ",
-      description: "አካባቢያችንን ከ ቆሻሻ ማጽዳት የ ሁላችንም ሀላፊነት መሆኑ ተገለጸ።",
-      date: "2024-03-15",
-      category: "በቀበሌው የፅዳት ስራ",
-      Image: "/images/image-1.webp",
-    },
-    {
-      id: 2,
-      title: "የክፍለ ከተማ አመራሮች የምግቤን ከጓሮዬ ምልከታ",
-      description:
-        "ከፍተኛ የ ከፍለ ከተማ አመራሮች በ 2017 እየተካሄደ ያለውን የ ልማት ስራዎች ተዘዋውረው ጉብኝት አርገዋል።",
-      date: "2024-03-10",
-      category: "የክፍለ ከተማ አመራሮች ጉብኝት",
-      Image: "/images/image-2.webp",
-    },
-    {
-      id: 3,
-      title: "በቀበሌው የ ውሀ ተፋሰስ መውረጃ ግንባታ",
-      description: "በ 2017 ቀበሌያችን እየተከናወኑ ያሉ የልማት ስራዎች።",
-      date: "2024-03-05",
-      category: "በ ቀበሌው ሚከናወኑ ልማት ስራዎች",
-      Image: "/images/image-3.webp",
-    },
-  ];
-
+  
   const [name, setName] = useState(() => {
     const saved = localStorage.getItem("first_name");
   // Check if the value exists and handle it appropriately
@@ -74,6 +54,17 @@ function Admin() {
   };
 
 useEffect(() => {
+  const fetchNews = async () =>{
+    setNewsLoader(true);
+    try {
+      const response = await axios.get("http://localhost:8080/news");
+      setNews(response.data);
+      setNewsLoader(false);
+    } catch (err) {
+      setError("faild to fetch");
+      setNewsLoader(false);
+    }
+  }
 
   const fetchAdminUsers = async () => {
     try {
@@ -82,6 +73,9 @@ useEffect(() => {
       const res = await api.get("/getAllAdminUser");
 
       setAdmins(res.data);
+      if (res.data[0].image !== null) {
+        setImageUrl(res.data[0].image);
+      }
 
     } catch (err) {
 
@@ -95,6 +89,7 @@ useEffect(() => {
   };
 
   fetchAdminUsers();
+  fetchNews();
 
 }, []);
   
@@ -140,15 +135,36 @@ const handleToggle = async (itemId:number) => {
     setActiveToggle(null);
   }
 };
+const handleDateConversion = (timestamp)=>{
+   try {
+      // 1. Create a JavaScript Date object from the ISO string
+      const dateInput = format(new Date(timestamp), 'yyyy-MM-dd HH:mm:ss');
+
+      const dateObj = new Date(dateInput);
+
+
+      // 2. Convert the European/Gregorian date to Ethiopian date using the library
+      const ethDateTime = EthDateTime.fromEuropeanDate(dateObj)
+
+      const formattedDate = `${ethDateTime.year}-${ethDateTime.month.toString().padStart(2, '0')}-${ethDateTime.getDay.toString().padStart(2, '0')}`;
+      const formattedTime = `${ethDateTime.hour.toString().padStart(2, '0')}:${ethDateTime.minute.toString().padStart(2, '0')}:${ethDateTime.second.toString().padStart(2, '0')}`;
+      const formatedDateTime = ethDateTime;
+      return formatedDateTime;
+    } catch (error) {
+      console.error("Error converting date:", error);
+      return "erre ";
+    }
+
+}
   return (
     <section>
       <Header adminName={name} onLogout={handleLogout}/>
       <div>
         <div className="container mx-auto px-4 my-8">
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 ">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 w-full">
             {loading? (
-              <div className="w-full mx-auto">
-                <WifiLoaderComponent />
+              <div className="w-full mx-auto text-green-400">
+                loading
               </div>
             )  :admins.map((item, index) => (
               <Card
@@ -163,7 +179,7 @@ const handleToggle = async (itemId:number) => {
                           style={{
                             backgroundImage: `
                             linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
-                            url(${item.image})
+                            url(${imageUrl})
                           `,
                             backgroundSize: "cover",
                             backgroundPosition: "center",
@@ -192,9 +208,9 @@ const handleToggle = async (itemId:number) => {
       <UploadImage />
       <div className="container mx-auto px-4 my-4">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {newsItems.map((item, index) => (
+          {news.map((item, index) => (
             <Card
-              key={index}
+              key={item.id}
               className="animate-fade-up flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
@@ -204,22 +220,25 @@ const handleToggle = async (itemId:number) => {
                     className="h-48 w-ful absolute inset-0 z-10 rounded-2xl bg-cover bg-center"
                     style={{
                       backgroundImage: `
-                        url(${item.Image})
+                        url(${item.image})
                       `,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                       backgroundBlendMode: "darken",
                     }}
                   ></div>
-                  <Badge variant="secondary" className="z-20 ">
-                    {item.category}
+                  {item.subHeading && (
+                    <Badge variant="secondary" className="z-20 ">
+                    {item.sub_heading}
                   </Badge>
+                  )}
                 </div>
                 <div className="text-[12px] font-light text-gray-600">
-                  <p>ዜናው የተላለፈበት ስዐት፡ {item.date}</p>
+                  
+                  <p>ዜናው የተላለፈበት ስዐት፡ {}</p>
                 </div>
                 <CardTitle className="text-xl">{item.title}</CardTitle>
-                <CardDescription>{item.description}</CardDescription>
+                <CardDescription>{item.body}</CardDescription>
               </CardHeader>
               <CardContent className="mt-auto">
                 <Button className="group w-full  bg-primary/95 hover:bg-primary/80">
