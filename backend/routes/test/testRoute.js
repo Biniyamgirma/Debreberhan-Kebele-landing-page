@@ -1,13 +1,13 @@
 const express = require("express");
 const route = express.Router();
-const { connectWithConnector } = require("../../config/config");
-const { hashPassword } = require("../../utils/utils");
+// const { connectWithConnector } = require("../../config/config");
+// const { hashPassword } = require("../../utils/utils");
 let pool;
-route.post("/test", async (req, res) => {
+route.get("/", async (req, res) => {
   try {
-    pool = await connectWithConnector();
-    const [rows] = await pool.query("SELECT NOW()");
-    res.json(rows);
+    // pool = await connectWithConnector();
+    // const [rows] = await pool.query("SELECT NOW()");
+    res.json({ message: "its working fine" });
   } catch (error) {
     console.error("Error connecting to the database:", error.message);
   } finally {
