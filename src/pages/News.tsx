@@ -15,7 +15,7 @@ import React, { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 let base_url = import.meta.env.VITE_BASE_URL;
-base_url = base_url + "/getAllNewss";
+base_url = base_url + "/getAllNews";
 export default function News() {
   const { t, language } = useLanguage();
   const [news, setNews] = useState([]);

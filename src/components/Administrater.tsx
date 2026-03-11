@@ -10,6 +10,7 @@ let base_url = import.meta.env.VITE_BASE_URL;
 base_url = base_url + "/getAllAdminUser";
 import axios from "axios";
 import Image from "/images/image-6.jpg";
+import { WifiLoaderComponent } from "./ui/WifiLoaderComponent";
 
 function Administrater() {
   const [admins, setAdmins] = useState([]);
@@ -31,18 +32,18 @@ function Administrater() {
 
   return (
     <section className="py-16 bg-accent-foreground flex-col justify-center items-center w-full ">
-      <div className="container mx-auto px-4">
+      <div className="container w-screen mx-auto px-4">
         {loading ? (
-          <h1 className="text-green-500">Loading.....</h1>
+          <WifiLoaderComponent />
         ) : error ? (
           <h1 className="text-red-500">error</h1>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 w-full mx-auto">
             {admins.map((item, index) => (
               <Card
                 key={index}
                 className="animate-fade-up flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1 "
-                style={{ animationDelay: `${index * 0.1}s`, backgroundColor: `${item.isOnline == 1 ? "#a8df8e1a" : "#ffbfbf1a"}` }}
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <CardHeader>
                   <div className="mb-2 h-60 p-4 flex items-end justify-between relative">

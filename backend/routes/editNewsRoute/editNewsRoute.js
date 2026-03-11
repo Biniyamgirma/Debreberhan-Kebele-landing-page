@@ -5,35 +5,60 @@ const router = express.Router();
 const authMiddleware = require("../../middleware/authMiddleware");
 const cloudinary = require("../../config/cloudinary");
 let pool;
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    pool = await connectWithConnector();
+    const [rows] = await pool.query("SELECT * FROM news WHERE id=?", [id]);
+    res.json(rows);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "something went wrong",
+      error,
+    });
+  }
+});
 router.put(
   "/",
   authMiddleware(["subAdmin", "admin"]),
   upload.single("editedImage"),
   async (req, res) => {
     try {
-      const result = cloudinary.uploader.upload_stream(
-        {
-          folder: "news_images",
-        },
-        async (error, result) => {
-          if (error) return res.status(500).json({ message: error.message });
-          const { id, title, body, newsId } = req.body;
-          pool = await connectWithConnector();
-          const [rows] = await pool.query(
-            "UPDATE news SET user_id=?, title=?, body=?, image=? WHERE id=?",
-            [id, title, body, result.secure_url, newsId],
-          );
-          res.json({
-            message: "news updated successfully",
-          });
-        },
+      if (!req.file) {
+        return res.status(400).json({ message: "No image file provided" });
+      }
+
+      const { id, title, body, subHeading } = req.body;
+
+      // Upload to Cloudinary using buffer
+      const result = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { folder: "news_images" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          },
+        );
+        uploadStream.end(req.file.buffer);
+      });
+      // Update database
+      const pool = await connectWithConnector();
+      await pool.query(
+        "UPDATE news SET title=?, body=?, image=?, sub_heading=? WHERE id=?",
+        [title, body, result.secure_url, subHeading, id],
       );
-      result.end(req.file.buffer);
+
+      res.json({
+        message: "News updated successfully",
+        imageUrl: result.secure_url,
+      });
     } catch (error) {
-      console.log(error);
+      console.error("Error:", error);
       res.status(500).json({
-        message: "upload failed",
-        error,
+        message: "Upload failed",
+        error: error.message,
       });
     }
   },
