@@ -7,10 +7,12 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// app.use(cors({
-//   origin: 'http://localhost:5173',
-//   credentials: true // Allow cookies to be sent
-// }));
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173",
+//     credentials: true, // Allow cookies to be sent
+//   }),
+// );
 
 // app.use(express.urlencoded({ extended: false }));
 // app.use(function (req, res, next) {
@@ -39,7 +41,7 @@ const PORT = process.env.PORT || 8080;
 // app.use("/deleteNews", require("./routes/deleteNewsRoute/deleteNewsRoute"));
 // app.use("/getAllNews", require("./routes/newsRoute/newsRoute"));
 
-// // app.use("/addNews", require("./routes/addNewsRoute/addNewsRoute"));
+// app.use("/addNews", require("./routes/addNewsRoute/addNewsRoute"));
 
 app.use("/", require("./routes/test/testRoute"));
 app.listen(PORT, () => {

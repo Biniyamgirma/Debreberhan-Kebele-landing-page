@@ -9,6 +9,7 @@ route.get("/", async (req, res) => {
     const [rows] = await pool.query("SELECT NOW()");
     res.json({ message: "its working fine", data: rows });
   } catch (error) {
+    res.status(500).json({ error: "Internal Server Error", data: error });
     console.error("Error connecting to the database:", error.message);
   }
 });
