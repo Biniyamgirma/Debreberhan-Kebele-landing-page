@@ -2,7 +2,6 @@ const express = require("express");
 const route = express.Router();
 // const { connectWithConnector } = require("../../config/config");
 // const { hashPassword } = require("../../utils/utils");
-let pool;
 route.get("/", async (req, res) => {
   try {
     // pool = await connectWithConnector();
@@ -10,8 +9,6 @@ route.get("/", async (req, res) => {
     res.json({ message: "its working fine" });
   } catch (error) {
     console.error("Error connecting to the database:", error.message);
-  } finally {
-    if (pool) pool.end();
   }
 });
 
