@@ -19,7 +19,8 @@
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "multer": "^2.0.2",
-    "mysql2": "^3.17.4"
+    "mysql2": "^3.17.4",
+    "postgres": "^3.4.8"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

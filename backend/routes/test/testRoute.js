@@ -1,12 +1,11 @@
 const express = require("express");
 const route = express.Router();
-const { connectWithConnector } = require("../../config/config");
-// const { hashPassword } = require("../../utils/utils");
+const sql = require("../../config/db");
+const { hashPassword } = require("../../utils/utils");
 route.get("/", async (req, res) => {
   try {
-    const pool = await connectWithConnector();
-    const [rows] = await pool.query("SELECT NOW()");
-    res.end({ message: "its working fine", data: rows });
+    const dateTimeInSupabase = await sql`SELECT NOW()`;
+    res.end({ message: "its working fine", data: dateTimeInSupabase });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error", data: error });
   }
