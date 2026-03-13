@@ -1,16 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const { connectWithConnector } = require("../../config/config");
-const { generateToken, comparePassword } = require("../../utils/utils");
+const {
+  generateToken,
+  comparePassword,
+  hashPassword,
+} = require("../../utils/utils");
+const supabase = require("../../config/supabaseClient");
 
-let pool;
 /// Login Route
 //@desc   Login user
 //@route  POST /api/users
 //@access Public
 router.post("/login", async (req, res) => {
-  let { firstName, password } = req.body;
-  console.log(firstName, password);
+  const { firstName, password } = req.body;
   firstName = firstName.replace(/[^a-zA-Z0-9 ]/g, "");
   if (!firstName || !password) {
     return res
@@ -18,22 +20,29 @@ router.post("/login", async (req, res) => {
       .json({ message: "Please provide all required fields" });
   }
   try {
-    pool = await connectWithConnector();
-    const [rows] = await pool.query("SELECT * FROM user WHERE first_name = ?", [
-      firstName,
-    ]);
-    if (rows.length === 0) {
-      return res.status(404).json({ message: "User not found" });
+    const { data, error } = await supabase
+      .from("user")
+      .select("*")
+      .eq("first_name", firstName);
+    if (error) {
+      res.status(500).json({ message: "Internal server error" });
     }
-    const user = rows[0];
-    const {first_name, middle_name,last_name,role} = user
-    console.log(user);
+
+    const user = data[0];
+    const { first_name, middle_name, last_name, role, category, honorifics } =
+      user;
     const isPasswordValid = await comparePassword(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid password" });
     }
     const token = generateToken(user);
-    res.json({ message: "Login successful",id:user.id, userFirstName: first_name,userMiddleName:middle_name, token });
+    res.json({
+      message: "Login successful",
+      id: user.id,
+      userFirstName: first_name,
+      userMiddleName: middle_name,
+      token,
+    });
   } catch (err) {
     console.error("Error during login:", err);
     res.status(500).json({ error: "Internal server error" });
@@ -41,6 +50,59 @@ router.post("/login", async (req, res) => {
     if (pool) {
       await pool.end();
     }
+  }
+});
+
+router.post("/addAdmin", async (req, res) => {
+  const {
+    first_name,
+    middle_name,
+    last_name,
+    password,
+    role,
+    category,
+    honorifics,
+  } = req.body;
+
+  if (
+    !first_name ||
+    !middle_name ||
+    !last_name ||
+    !password ||
+    !role ||
+    !category
+  ) {
+    res.status().json({
+      message: "missing field",
+    });
+    return;
+  }
+  const hasedPassword = await hashPassword(password);
+  const { data, error } = supabase.from("user").insert([
+    {
+      first_name: first_name,
+      middle_name: middle_name,
+      last_name: last_name,
+      password: hasedPassword,
+      role: role,
+      is_online: 0,
+      category: category,
+      honorifics: honorifics,
+    },
+  ]);
+  res.status().json({ data: data });
+});
+
+router.delete("/delete/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const { data, error } = await supabase.from("user").delete().eq("id", id);
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    res.json({ message: "User deleted successfully", id: id });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 

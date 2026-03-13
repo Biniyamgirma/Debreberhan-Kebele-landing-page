@@ -1,21 +1,19 @@
 const express = require("express");
-const { connectWithConnector } = require("../../config/config");
 require("dotenv").config();
 const router = express.Router();
-
+const supabase = require("../../config/supabaseClient");
 let connection;
 router.get("/", async (req, res) => {
   try {
-    connection = await connectWithConnector();
-    const [rows] = await connection.query("SELECT * FROM news");
+    const { data, error } = await supabase.from("news").select("*");
     res.json(
-      rows.map((news) => ({
+      data.map((news) => ({
         id: news.id,
         title: news.title,
         body: news.body,
         image: news.image,
         subHeading: news.sub_heading,
-        date: news.created_at
+        date: news.created_at,
       })),
     );
   } catch (error) {

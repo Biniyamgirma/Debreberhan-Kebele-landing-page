@@ -1,13 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const { connectWithConnector } = require("../../config/config");
-let pool;
+const supabase = require("../../config/supabaseClient");
 router.get("/getNewsToEdit", async (req, res) => {
   const id = req.query.id;
   try {
-    pool = await connectWithConnector();
-    const [rows] = await pool.query("SELECT * FROM news WHERE id = ?", [id]);
-    res.json(rows);
+    const { data, error } = await supabase
+      .from("news")
+      .select("*")
+      .eq("id", id);
+    if (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+    res.json(data);
   } catch (error) {
     res.status(500).json({ message: error.message });
   } finally {

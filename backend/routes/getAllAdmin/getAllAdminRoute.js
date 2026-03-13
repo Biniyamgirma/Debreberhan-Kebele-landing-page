@@ -1,25 +1,23 @@
 const express = require("express");
-const { connectWithConnector } = require("../../config/config");
-
+const supabase = require("../../config/supabaseClient");
 require("dotenv").config();
 const router = express.Router();
 
-
 router.get("/", async (req, res) => {
   try {
-    const pool = await connectWithConnector();
-    const [rows] = await pool.query("SELECT * FROM user ");
-    if (rows.length === 0) {
-      return res.status(404).json({ error: "System status not found" });
+    const { data, error } = await supabase.from("user").select("*");
+    if (error) {
+      res.status(500).json({ message: "Internal server error" });
     }
     res.json(
-      rows.map((user) => ({
+      data.map((user) => ({
         id: user.id,
         firstName: user.first_name,
         middleName: user.middle_name,
-        admin:user.role,
-        category:user.category,
+        admin: user.role,
+        category: user.category,
         isOnline: user.is_online,
+        honorifics: user.honorifics,
         image: user.image,
       })),
     );

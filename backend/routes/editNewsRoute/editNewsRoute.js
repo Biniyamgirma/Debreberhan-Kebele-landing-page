@@ -1,17 +1,20 @@
 const express = require("express");
-const { connectWithConnector } = require("../../config/config");
 const upload = require("../../middleware/upload");
 const router = express.Router();
 const authMiddleware = require("../../middleware/authMiddleware");
 const cloudinary = require("../../config/cloudinary");
-let pool;
+const supabase = require("../../config/supabaseClient");
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
-    pool = await connectWithConnector();
-    const [rows] = await pool.query("SELECT * FROM news WHERE id=?", [id]);
-    res.json(rows);
+    const { data, error } = await supabase
+      .from("news")
+      .select("*")
+      .eq("id", id);
+    if (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+    res.json(data);
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -44,11 +47,17 @@ router.put(
         uploadStream.end(req.file.buffer);
       });
       // Update database
-      const pool = await connectWithConnector();
-      await pool.query(
-        "UPDATE news SET title=?, body=?, image=?, sub_heading=? WHERE id=?",
-        [title, body, result.secure_url, subHeading, id],
-      );
+      const { data, error } = await supabase.from("news").update({
+        title: title,
+        body: body,
+        image: result.secure_url,
+        is_active: 1,
+        simple_heading: subHeading,
+      });
+
+      if (error) {
+        res.status(500).json({ message: "bad request" });
+      }
 
       res.json({
         message: "News updated successfully",

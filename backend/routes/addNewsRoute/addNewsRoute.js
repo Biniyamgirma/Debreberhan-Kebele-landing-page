@@ -1,20 +1,18 @@
 const express = require("express");
-const { connectWithConnector } = require("../../config/config");
 const upload = require("../../middleware/upload");
 require("dotenv").config();
 const router = express.Router();
 const authMiddleware = require("../../middleware/authMiddleware");
 const cloudinary = require("../../config/cloudinary");
-let pool;
-
+const supabase = require("../../config/supabaseClient");
 router.get("/", async (req, res) => {
   try {
-    query = "SELECT * FROM news";
-    pool = await connectWithConnector();
-    const [rows] = await pool.query(query);
-    res.json(rows);
+    const { data, error } = await supabase.from("news").select("*");
+    if (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+    res.json({ data: data });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -31,15 +29,21 @@ router.post(
         },
         async (error, result) => {
           if (error) return res.status(500).json({ message: error.message });
-          const { id, title, body,subHeading } = req.body;
-          pool = await connectWithConnector();
-          const [rows] = await pool.query(
-            "INSERT INTO news (user_id, title, body, image,sub_heading) VALUES (?, ?, ?, ?,?)",
-            [id, title, body, result.secure_url,subHeading],
-          );
+          const { id, title, body, subHeading } = req.body;
+          const { data } = await supabase.from("news").insert([
+            {
+              user_id: id,
+              title: title,
+              body: body,
+              simple_heading: subHeading,
+              is_active: 1,
+              image: result.secure_url,
+            },
+          ]);
+
           res.json({
-            message: "news addes successfully",
-            id: rows.insertId,
+            message: "news added successfully",
+            id: data.insertId,
             title,
             body,
             imageUrl: result.secure_url,
