@@ -1,10 +1,8 @@
-import React,{useState,useEffect}from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {WifiLoaderComponent} from "@/components/ui/WifiLoaderComponent"
+import { WifiLoaderComponent } from "@/components/ui/WifiLoaderComponent";
 import api from "@/lib/api";
-
-
 
 function Login() {
   const [firstName, setFirstName] = useState("");
@@ -12,9 +10,9 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-   const handlLogIn = async (e) => {
+  const handlLogIn = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
@@ -32,19 +30,18 @@ function Login() {
         localStorage.setItem("last_name", response.data.userFirstName);
         localStorage.setItem("id", response.data.id);
 
-        api.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${response.data.token}`;
+        api.defaults.headers.common["Authorization"] =
+          `Bearer ${response.data.token}`;
 
         setMessage("Login successful!");
-        navigate("/admin"); 
+        navigate("/admin");
       } else {
         setMessage(response.data.message);
       }
     } catch (error) {
       console.error(error.response?.data || error.message);
       setMessage(
-        error.response?.data?.message || "Server error. Please try again."
+        error.response?.data?.message || "Server error. Please try again.",
       );
     }
     setLoading(false);
@@ -68,7 +65,7 @@ function Login() {
           {loading ? <WifiLoaderComponent /> : ""}
         </div>
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#"  className="space-y-6" onSubmit={handlLogIn}>
+          <form action="#" className="space-y-6" onSubmit={handlLogIn}>
             <div>
               <label
                 htmlFor="email"
@@ -78,12 +75,12 @@ function Login() {
               </label>
               <div className="mt-2">
                 <input
-                  id="email"
+                  id="name"
                   type="name"
                   name="name"
                   required
                   autoComplete="name"
-                  onChange={(e)=>setFirstName(e.target.value)}
+                  onChange={(e) => setFirstName(e.target.value)}
                   className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
                 />
               </div>
@@ -103,7 +100,7 @@ function Login() {
                   type="password"
                   name="password"
                   required
-                  onChange={(e)=>setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
                   className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
                 />
@@ -112,7 +109,7 @@ function Login() {
             <div>
               <button
                 type="submit"
-                disabled={firstName === '' || password ==='' || loading}
+                disabled={firstName === "" || password === "" || loading}
                 onClick={handlLogIn}
                 className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
               >

@@ -86,7 +86,9 @@ function Edit() {
         setTitle(response.data[0].title ? response.data[0].title : "");
         setBody(response.data[0].body ? response.data[0].body : "");
         setSubHeading(
-          response.data[0].sub_heading ? response.data[0].sub_heading : "",
+          response.data[0].simple_heading
+            ? response.data[0].simple_heading
+            : "",
         );
         setLoading(false);
       })
@@ -149,7 +151,7 @@ function Edit() {
                   rows={2}
                   value={subHeading}
                   onChange={(e) => setSubHeading(e.target.value)}
-                  className="block w-full text-sm bg-transparent border-0 focus:ring-0"
+                  className="block text-black w-full text-sm bg-transparent border-0 focus:ring-0"
                   required
                 />
               </div>
@@ -169,9 +171,9 @@ function Edit() {
               <div className="flex items-center px-3 py-2 border-t border-default-medium">
                 <button
                   type="submit"
-                  className="text-white cursor-pointer hover:bg-primary/80 bg-primary/90 box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-3 py-2 focus:outline-none"
+                  className=" text-white cursor-pointer hover:bg-primary/80 bg-primary/90 box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-3 py-2 focus:outline-none"
                 >
-                  yetestekakelewn lemaserachet
+                  የተስተካከለውን ዜና ለማሰራጨት ይህን ይጫኑ።
                 </button>
                 <div className="flex ps-0 space-x-1 rtl:space-x-reverse sm:ps-2">
                   <button
@@ -180,8 +182,8 @@ function Edit() {
                   >
                     <label className="ml-4 cursor-pointer">
                       <svg
-                        width="20px"
-                        height="20px"
+                        width="30px"
+                        height="30px"
                         viewBox="0 0 24 24"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
@@ -204,9 +206,9 @@ function Edit() {
                   </button>
                   <button
                     onClick={handleNewsdelete}
-                    className="py-2 px-3 bg-red-300 text-white cursor-pointer rounded-sm hover:bg-red-400"
+                    className="py-2  px-3 bg-red-300 text-white cursor-pointer rounded-sm hover:bg-red-400"
                   >
-                    Delete This news
+                    ዜናውን ሙሉ ለሙሉ ለማጥፋት ይህን ይጫኑ።
                   </button>
                   <div>{updateLoading ? <WifiLoaderComponent /> : ""}</div>
                 </div>

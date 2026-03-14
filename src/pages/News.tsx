@@ -105,7 +105,7 @@ export default function News() {
                       }}
                     ></div>
                     <Badge variant="secondary" className="z-20 ">
-                      {item.subHeading}
+                      {item.subHeading ? item.subHeading : ""}
                     </Badge>
                   </div>
                   <CardTitle className="text-xl">{item.title}</CardTitle>

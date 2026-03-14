@@ -47,13 +47,16 @@ router.put(
         uploadStream.end(req.file.buffer);
       });
       // Update database
-      const { data, error } = await supabase.from("news").update({
-        title: title,
-        body: body,
-        image: result.secure_url,
-        is_active: 1,
-        simple_heading: subHeading,
-      });
+      const { data, error } = await supabase
+        .from("news")
+        .update({
+          title: title,
+          body: body,
+          image: result.secure_url,
+          is_active: 1,
+          simple_heading: subHeading,
+        })
+        .eq("id", id);
 
       if (error) {
         res.status(500).json({ message: "bad request" });

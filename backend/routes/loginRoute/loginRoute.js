@@ -7,17 +7,17 @@ const {
 } = require("../../utils/utils");
 const supabase = require("../../config/supabaseClient");
 
-/// Login Route
 //@desc   Login user
 //@route  POST /api/users
 //@access Public
 router.post("/login", async (req, res) => {
-  const { firstName, password } = req.body;
-  firstName = firstName.replace(/[^a-zA-Z0-9 ]/g, "");
+  let { firstName, password } = req.body;
   if (!firstName || !password) {
-    return res
-      .status(400)
-      .json({ message: "Please provide all required fields" });
+    return res.status(400).json({
+      message: "Please provide all required fields",
+      firstName: firstName,
+      password: password,
+    });
   }
   try {
     const { data, error } = await supabase
@@ -29,8 +29,7 @@ router.post("/login", async (req, res) => {
     }
 
     const user = data[0];
-    const { first_name, middle_name, last_name, role, category, honorifics } =
-      user;
+    const { first_name, middle_name } = user;
     const isPasswordValid = await comparePassword(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid password" });
@@ -46,10 +45,6 @@ router.post("/login", async (req, res) => {
   } catch (err) {
     console.error("Error during login:", err);
     res.status(500).json({ error: "Internal server error" });
-  } finally {
-    if (pool) {
-      await pool.end();
-    }
   }
 });
 

@@ -18,12 +18,11 @@ import { Button } from "@/components/ui/button";
 import Header from "@/components/admin/Header";
 import axios from "axios";
 import api from "@/lib/api";
-import AdministratorCard from "@/components/admin/AdministratorCard";
-// import imageUrl from "/images/image-6.jpg";
 import UploadImage from "@/components/admin/UploadImage";
 import defaultImage from "/images/image-6.jpg";
 import { Link } from "react-router-dom";
 import { WifiLoaderComponent } from "@/components/ui/WifiLoaderComponent";
+const base_url = import.meta.env.VITE_BASE_URL;
 
 function Admin() {
   const [date, setDate] = useState(null);
@@ -45,7 +44,6 @@ function Admin() {
         // Try to parse as JSON first (in case it was stored with JSON.stringify)
         return JSON.parse(saved);
       } catch {
-        // If parsing fails, it's a plain string, so return it directly
         return saved;
       }
     }
@@ -60,7 +58,7 @@ function Admin() {
     const fetchNews = async () => {
       setNewsLoader(true);
       try {
-        const response = await axios.get("http://localhost:8080/news");
+        const response = await api.get(`/news`);
         setNews(response.data);
         setNewsLoader(false);
       } catch (err) {
@@ -72,9 +70,7 @@ function Admin() {
     const fetchAdminUsers = async () => {
       try {
         setLoading(true);
-
         const res = await api.get("/getAllAdminUser");
-
         setAdmins(res.data);
         if (res.data[0].image !== null) {
           setImageUrl(res.data[0].image);
@@ -95,8 +91,9 @@ function Admin() {
     if (!clickedItem) return;
 
     setActiveToggle(itemId);
-
-    const newStatus = clickedItem.isOnline === 1 ? 0 : 1;
+    let status = 0;
+    const newStatus = clickedItem.isOnline === true ? false : true;
+    status = newStatus ? 1 : 0;
 
     // optimistic update
     setAdmins((prev) =>
@@ -106,11 +103,11 @@ function Admin() {
     );
 
     try {
-      await api.put(`/changeIsOnline`, {
-        isOnline: newStatus,
+      await api.put("/changeIsOnline", {
+        isOnline: status,
         id: itemId,
       });
-      setTrigger(!trigger);
+      setTrigger((prev) => !prev);
       console.log("status changed", itemId, newStatus);
     } catch (error) {
       // rollback if failed
@@ -123,25 +120,7 @@ function Admin() {
       setActiveToggle(null);
     }
   };
-  const handleDateConversion = (timestamp) => {
-    try {
-      // 1. Create a JavaScript Date object from the ISO string
-      const dateInput = format(new Date(timestamp), "yyyy-MM-dd HH:mm:ss");
 
-      const dateObj = new Date(dateInput);
-
-      // 2. Convert the European/Gregorian date to Ethiopian date using the library
-      const ethDateTime = EthDateTime.fromEuropeanDate(dateObj);
-
-      const formattedDate = `${ethDateTime.year}-${ethDateTime.month.toString().padStart(2, "0")}-${ethDateTime.getDay.toString().padStart(2, "0")}`;
-      const formattedTime = `${ethDateTime.hour.toString().padStart(2, "0")}:${ethDateTime.minute.toString().padStart(2, "0")}:${ethDateTime.second.toString().padStart(2, "0")}`;
-      const formatedDateTime = ethDateTime;
-      return formatedDateTime;
-    } catch (error) {
-      console.error("Error converting date:", error);
-      return "erre ";
-    }
-  };
   return (
     <section>
       <Header adminName={name} onLogout={handleLogout} />

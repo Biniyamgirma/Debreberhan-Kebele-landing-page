@@ -14,8 +14,6 @@ const generateToken = (user) => {
   );
 };
 
-
-
 const verifyToken = (token) => {
   return jwt.verify(token, secretKey);
 };

@@ -5,13 +5,14 @@ const router = express.Router();
 const authMiddleware = require("../../middleware/authMiddleware");
 const cloudinary = require("../../config/cloudinary");
 const supabase = require("../../config/supabaseClient");
+const { type } = require("node:os");
 router.get("/", async (req, res) => {
   try {
     const { data, error } = await supabase.from("news").select("*");
     if (error) {
       res.status(500).json({ message: "Internal server error" });
     }
-    res.json({ data: data });
+    res.json(data);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -23,38 +24,59 @@ router.post(
   upload.single("image"),
   async (req, res) => {
     try {
-      const result = cloudinary.uploader.upload_stream(
+      if (!req.file) {
+        return res.status(400).json({
+          message: "Image file is required",
+        });
+      }
+
+      const stream = cloudinary.uploader.upload_stream(
         {
           folder: "news_images",
         },
-        async (error, result) => {
-          if (error) return res.status(500).json({ message: error.message });
+        async (error, cloudResult) => {
+          if (error) {
+            return res.status(500).json({
+              message: error.message,
+              type: "error",
+            });
+          }
+
           const { id, title, body, subHeading } = req.body;
-          const { data } = await supabase.from("news").insert([
-            {
-              user_id: id,
-              title: title,
-              body: body,
-              simple_heading: subHeading,
-              is_active: 1,
-              image: result.secure_url,
-            },
-          ]);
+
+          const { data, error: dbError } = await supabase
+            .from("news")
+            .insert([
+              {
+                user_id: id,
+                title: title,
+                body: body,
+                simple_heading: subHeading,
+                is_active: 1,
+                image: cloudResult.secure_url,
+              },
+            ])
+            .select();
+
+          if (dbError) {
+            return res.status(500).json({
+              message: dbError.message,
+            });
+          }
 
           res.json({
             message: "news added successfully",
-            id: data.insertId,
-            title,
-            body,
-            imageUrl: result.secure_url,
+            data,
+            imageUrl: cloudResult.secure_url,
           });
         },
       );
-      result.end(req.file.buffer);
+
+      stream.end(req.file.buffer);
     } catch (error) {
       res.status(500).json({
         message: "upload failed",
-        error,
+        error: error.message,
       });
     }
   },

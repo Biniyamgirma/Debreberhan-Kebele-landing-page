@@ -38,7 +38,7 @@ function Administrater() {
         ) : error ? (
           <h1 className="text-red-500">error</h1>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 w-full mx-auto">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 w-full ">
             {admins.map((item, index) => (
               <Card
                 key={index}
@@ -59,18 +59,27 @@ function Administrater() {
                         backgroundBlendMode: "darken",
                       }}
                     ></div>
-                    {item.isOnline == 1 ? (
+                    {item.isOnline == true ? (
                       <Badge variant="default" className="z-20">
-                        {item.isOnline == 1
-                          ? "hezb be magelgela lay yegenalu"
-                          : ""}
+                        {item.isOnline == true ? "online" : ""}
                       </Badge>
                     ) : (
                       ""
                     )}
                   </div>
-                  <CardTitle className="text-xl">{item.firstName}</CardTitle>
-                  <CardDescription>{item.middleName}</CardDescription>
+                  <CardTitle className="text-xl">
+                    {item.category +
+                      ": " +
+                      item.honorifics +
+                      " " +
+                      item.firstName +
+                      " " +
+                      item.middleName +
+                      " " +
+                      item.lastName +
+                      " "}
+                  </CardTitle>
+                  <CardDescription>{item.category}</CardDescription>
                 </CardHeader>
               </Card>
             ))}

@@ -7,12 +7,12 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// app.use(
-//   cors({
-//     origin: "http://localhost:5173",
-//     credentials: true, // Allow cookies to be sent
-//   }),
-// );
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true, // Allow cookies to be sent
+  }),
+);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(function (req, res, next) {
@@ -20,26 +20,26 @@ app.use(function (req, res, next) {
   next();
 });
 app.use(express.json());
-// app.use("/getAllAdminUser", require("./routes/getAllAdmin/getAllAdminRoute"));
-// app.use("/addUser", require("./routes/addUserRoute/addUserAdminRoute")); /// i should work on or remove
-// app.use("/api", require("./routes/loginRoute/loginRoute")); //working loging
-// app.use("/news", require("./routes/addNewsRoute/addNewsRoute"));
-// app.use(
-//   "/changeIsOnline",
-//   require("./routes/changeIsOnlineStatusRoute/changeIsOnlineStatusRoute"),
-// );
-// app.use(
-//   "/isOnline",
-//   require("./routes/showIfIsOnlineRoute/showIfIsOnlineRoute"),
-// );
-// app.use(
-//   "/specificNews",
-//   require("./routes/selectSpecificNewsRoute/selectSpecificNewsRoute"),
-// );
-// app.use("/editNews", require("./routes/editNewsRoute/editNewsRoute"));
-// app.use("/deleteNews", require("./routes/deleteNewsRoute/deleteNewsRoute"));
-// app.use("/getAllNews", require("./routes/newsRoute/newsRoute"));
-// app.use("/addNews", require("./routes/addNewsRoute/addNewsRoute"));
+app.use("/getAllAdminUser", require("./routes/getAllAdmin/getAllAdminRoute"));
+app.use("/addUser", require("./routes/addUserRoute/addUserAdminRoute")); /// i should work on or remove
+app.use("/api", require("./routes/loginRoute/loginRoute")); //working loging
+app.use("/news", require("./routes/addNewsRoute/addNewsRoute"));
+app.use(
+  "/changeIsOnline",
+  require("./routes/changeIsOnlineStatusRoute/changeIsOnlineStatusRoute"),
+);
+app.use(
+  "/isOnline",
+  require("./routes/showIfIsOnlineRoute/showIfIsOnlineRoute"),
+);
+app.use(
+  "/specificNews",
+  require("./routes/selectSpecificNewsRoute/selectSpecificNewsRoute"),
+);
+app.use("/editNews", require("./routes/editNewsRoute/editNewsRoute"));
+app.use("/deleteNews", require("./routes/deleteNewsRoute/deleteNewsRoute"));
+app.use("/getAllNews", require("./routes/newsRoute/newsRoute"));
+app.use("/addNews", require("./routes/addNewsRoute/addNewsRoute"));
 
 app.use("/", require("./routes/test/testRoute"));
 app.listen(PORT, () => {
